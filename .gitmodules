@@ -1,0 +1,3 @@
+[submodule "qc-stomp-tools"]
+	path = qc-stomp-tools
+	url = https://github.com/VanIseghemThomas/qc-stomp-tools
