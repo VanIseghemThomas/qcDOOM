@@ -122,7 +122,9 @@ void I_GetEvent(void)
                 event.type = ev_keydown;
                 D_PostEvent(&event);
             }
-            
+
+            LedInputEffect(&event, i-1);
+
             free(messages[i]);
         }
     }
@@ -138,6 +140,15 @@ void I_InitInput(void)
     stomps_opened = 1;
 }
 
+void LedInputEffect(event_t *event, int stomp_index){
+    if(event->type == ev_keydown){
+        SetLedAtIndexRGB(stomp_index, 0, 0, 255);
+    }
+    else if(event->type == ev_keyup){
+        SetLedAtIndexRGB(stomp_index, color_config[stomp_index].red, color_config[stomp_index].green, color_config[stomp_index].blue);
+    }
+}
+
 void ApplyDefaultColors() {
     for (int i = 0; i < N_STOMPS-1; i++) {
         SetLedAtIndexRGB(i, color_config[i].red, color_config[i].green, color_config[i].blue);
@@ -147,36 +158,36 @@ void ApplyDefaultColors() {
 void InitLedsConfig() {
     for (int i = 0; i < N_STOMPS-1; i++) {
         color_config[i].led_index = i+1;
-        color_config[i].red = 100;
-        color_config[i].green = 100;
-        color_config[i].blue = 100;
+        color_config[i].red = 50;
+        color_config[i].green = 50;
+        color_config[i].blue = 50;
     }
 
     // Apply a custom color scheme
     // Look left
-    color_config[0].red = 50;
-    color_config[0].green = 50;
-    color_config[0].blue = 50;
+    color_config[0].red = 25;
+    color_config[0].green = 25;
+    color_config[0].blue = 25;
 
     // Look right
-    color_config[2].red = 50;
-    color_config[2].green = 50;
-    color_config[2].blue = 50;
+    color_config[2].red = 25;
+    color_config[2].green = 25;
+    color_config[2].blue = 25;
 
     // Fire button
-    color_config[3].red = 100;
-    color_config[3].green = 100;
+    color_config[3].red = 50;
+    color_config[3].green = 50;
     color_config[3].blue = 0;
     
     // Enter button
-    color_config[4].red = 100;
+    color_config[4].red = 50;
     color_config[4].green = 0;
     color_config[4].blue = 0;
 
     // Use button
     color_config[8].red = 0;
     color_config[8].green = 0;
-    color_config[8].blue = 100;
+    color_config[8].blue = 50;
 
     // Escape button
     color_config[9].red = 0;
