@@ -47,10 +47,14 @@
 #include "w_wad.h"
 #include "z_zone.h"
 #include "stomp.h"
+#include "stomp_led.h"
 
 int vanilla_keyboard_mapping = 1;
 int stomps_opened = 0;
 FILE *files[12];
+
+// This keeps track of the stomp colors
+static led_rgb_cfg_t color_config[12];
 
 static const char keymap[12] = {
     KEY_LEFTARROW,
@@ -78,7 +82,7 @@ void I_GetEvent(void)
     }
 
     struct StompMessage **messages = ReadStomps(files);
-    for (int i = 1; i < 12; i++)
+    for (int i = 1; i < N_STOMPS; i++)
     {
         if (messages[i] != NULL)
         {
@@ -128,6 +132,59 @@ void I_InitInput(void)
 {
     printf("Initializing stomp listener\n");
     OpenFiles(files);
+    OpenZencoderFd();
+    InitLedsConfig();
+    ApplyDefaultColors();
     stomps_opened = 1;
-    //UpdateFocus();
+}
+
+void ApplyDefaultColors() {
+    for (int i = 0; i < N_STOMPS-1; i++) {
+        SetLedAtIndexRGB(i, color_config[i].red, color_config[i].green, color_config[i].blue);
+    }
+}
+
+void InitLedsConfig() {
+    for (int i = 0; i < N_STOMPS-1; i++) {
+        color_config[i].led_index = i+1;
+        color_config[i].red = 100;
+        color_config[i].green = 100;
+        color_config[i].blue = 100;
+    }
+
+    // Apply a custom color scheme
+    // Look left
+    color_config[0].red = 50;
+    color_config[0].green = 50;
+    color_config[0].blue = 50;
+
+    // Look right
+    color_config[2].red = 50;
+    color_config[2].green = 50;
+    color_config[2].blue = 50;
+
+    // Fire button
+    color_config[3].red = 100;
+    color_config[3].green = 100;
+    color_config[3].blue = 0;
+    
+    // Enter button
+    color_config[4].red = 100;
+    color_config[4].green = 0;
+    color_config[4].blue = 0;
+
+    // Use button
+    color_config[8].red = 0;
+    color_config[8].green = 0;
+    color_config[8].blue = 100;
+
+    // Escape button
+    color_config[9].red = 0;
+    color_config[9].green = 10;
+    color_config[9].blue = 0;
+
+    // Backspace button
+    color_config[10].red = 0;
+    color_config[10].green = 10;
+    color_config[10].blue = 0;
 }
